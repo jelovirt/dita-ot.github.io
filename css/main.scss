@@ -42,27 +42,31 @@ nav[role=toc] {
 		margin-left: 10px;
 
 		> a {
-			padding: 3px 0px;
+		  display: block;
+			padding: 3px 0px 3px 20px;
+			margin: 0px 0px 0px -20px;
 		}
-		&.active > a {
-		  /*
-			color: #fff;
-			text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
-			background-color: #08c;
-			*/
-			font-weight: bold;
+		&.active {
+		  > a {
+				color: white;
+				text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+				background-color: #08c;
+			}
+			.controller:before {
+				color: white;
+			}
 		}
-		&.open {
+		.controller:before {
+			font-size: 0.5em;
+		}
+		&.expanded {
 			> .controller:before {
 				content: "▼";
-				font-size: 0.5em;
 			}
-
 		}
-		&.closed {
+		&.collapsed {
 			> .controller:before {
 				content: "▶";
-				font-size: 0.5em;
 			}
 			> ul {
 				display: none;
