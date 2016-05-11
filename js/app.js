@@ -9,7 +9,8 @@ requirejs.config({
     app: '../app',
     lodash: 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.12.0/lodash.min',
     jquery: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min',
-    bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min'
+    bootstrap: 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min',
+    elasticlunr: 'elasticlunr.min'
   },
   shim: {
     bootstrap: ["jquery"]

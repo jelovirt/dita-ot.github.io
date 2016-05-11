@@ -4,11 +4,13 @@ define([
   'Common',
   'jquery',
   'jquery',
+  'elasticlunr',
   'bootstrap'
 ], function (
   Common,
   $,
-  jQuery
+  jQuery,
+  elasticlunr
 ) {
   return function SearchController($toc, index) {
     const common = Common(index)
@@ -25,8 +27,30 @@ define([
       .on('hidden.bs.modal', onHide)
     $searchInput.keyup(onType)
 
+    const queryIndex = createIndex()
+
     $(document).keypress(openSearch)
     $(document).keydown(resultNavigation)
+
+    function createIndex() {
+      const index = elasticlunr(function () {
+          this.addField('title')
+          this.addField('url')
+          this.setRef('id')
+          this.saveDocument(false)
+      })
+      
+      titles.forEach((topic, i) => {
+        let doc = {
+          'id': i,
+          'title': topic.title,
+          'url': topic.url
+        }
+        index.addDoc(doc)
+      })
+      
+      return index
+    }
 
     function onType(event) {
       if (event.which === 37 || event.which === 39) {
@@ -38,11 +62,7 @@ define([
         $body.empty()
         $modal.modal('handleUpdate')
       } else {
-        const query = buildQuery(value)
-        let results = titles.filter(query.exact)
-        if (results.length === 0) {
-          results = titles.filter(query.lax)
-        }
+        const results = doFullTextQuery(value)
         if (results.length === 0) {
           $body.html('<p class="text-center">No matching topics found.</p>')
         } else {
@@ -51,6 +71,21 @@ define([
       }
       currentResult = -1
       $modal.modal('handleUpdate')
+
+      function doQuery(value) {
+        const query = buildQuery(value)
+        let results = titles.filter(query.exact)
+        if (results.length === 0) {
+          results = titles.filter(query.lax)
+        }
+        return results
+      }
+      
+      function doFullTextQuery(value) {
+        return queryIndex
+          .search(value)
+          .map((match) => titles[new Number(match.ref)])
+      }
 
       function createResult(node) {
         return $(`<p><a></a></p>`)
