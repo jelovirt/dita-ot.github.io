@@ -15,7 +15,6 @@ define([
   return function SearchController($toc, index) {
     const common = Common(index)
     const titles = getTitles($toc)
-
     const $fullTextSearch = $('#search :input[name=q]')
     const $searchInput = $('#tocSearchInput')
     const $modal = $('#tocSearch')
@@ -26,30 +25,25 @@ define([
       .on('shown.bs.modal', onShow)
       .on('hidden.bs.modal', onHide)
     $searchInput.keyup(onType)
+    var queryIndex
 
-    const queryIndex = createIndex()
+    var indexUrl = new URI('/dev/index.json').absoluteTo(window.location.href).href()
+    $.ajax({
+      url: indexUrl,
+      success: (data) => {
+        init(data)
+      }
+    })
 
-    $(document).keypress(openSearch)
-    $(document).keydown(resultNavigation)
+    function init(queryIndexJson) {
+      queryIndex = createIndex(queryIndexJson)
 
-    function createIndex() {
-      const index = elasticlunr(function () {
-          this.addField('title')
-          this.addField('url')
-          this.setRef('id')
-          this.saveDocument(false)
-      })
-      
-      titles.forEach((topic, i) => {
-        let doc = {
-          'id': i,
-          'title': topic.title,
-          'url': topic.url
-        }
-        index.addDoc(doc)
-      })
-      
-      return index
+      $(document).keypress(openSearch)
+      $(document).keydown(resultNavigation)
+    }
+
+    function createIndex(queryIndexJson) {
+      return elasticlunr.Index.load(queryIndexJson)
     }
 
     function onType(event) {
@@ -80,11 +74,20 @@ define([
         }
         return results
       }
-      
+
+      const searchConfiguration = {
+        fields: {
+          title: {boost: 2},
+          body: {boost: 1}
+        },
+        bool: "AND",
+        expand: true
+      }
+
       function doFullTextQuery(value) {
         return queryIndex
-          .search(value)
-          .map((match) => titles[new Number(match.ref)])
+          .search(value, searchConfiguration)
+          .map((match) => titles[match.ref])
       }
 
       function createResult(node) {
@@ -196,7 +199,7 @@ define([
     }
 
     function getTitles($toc) {
-      return $toc
+      return _.keyBy($toc
         .find('a')
         .map(function () {
           const $node = $(this)
@@ -205,7 +208,10 @@ define([
             url: new URI($node.attr('href')).absoluteTo(index).href()
           }
         })
-        .toArray()
+        .toArray(),
+        function(topic) {
+          return new URI(topic.url).path()
+        })
     }
   }
 });
