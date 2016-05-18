@@ -60,7 +60,7 @@ define([
     }
 
     function getTitles($toc) {
-      return _.keyBy($toc
+      return $toc
           .find('a')
           .map(function () {
             const $node = $(this)
@@ -69,10 +69,7 @@ define([
               url: new URI($node.attr('href')).absoluteTo(index).href()
             }
           })
-          .toArray(),
-        function(topic) {
-          return new URI(topic.url).path()
-        })
+          .toArray()
     }
   }
 });
