@@ -17,7 +17,8 @@ define([
     const titles = getTitles($toc)
     var queryIndex
 
-    var indexUrl = new URI('/dev/index.json').absoluteTo(window.location.href).href()
+    var indexUrl = new URI(index + '/../index.json').normalize().href()
+    console.log(indexUrl)
     $.ajax({
       url: indexUrl,
       success: (data) => {
