@@ -15,7 +15,6 @@ define([
     const titles = getTitles($toc)
 
     return {
-      activationKey: 116, // s
       show: view.show
     }
 

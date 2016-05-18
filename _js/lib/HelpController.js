@@ -9,22 +9,21 @@ define([
   jQuery
 ) {
   return function HelpController() {
+    const view = HelpView()
+
+    return {
+      show: view.show
+    }
+  }
+
+  function HelpView() {
     const $help = $('#keyboardHelp')
     $help.modal({show: false})
 
-    $(document).keypress(openHelp)
-
-    function openHelp(event) {
-      const $target = $(event.target)
-      const key = event.which
-      if ($target.is(':input') || $('.modal:visible').length !== 0) {
-        // ignore
-      } else if (key === 63) {
-        event.preventDefault()
-        event.stopPropagation()
-
+    return {
+      show: function() {
         $help.modal('show')
       }
     }
   }
-});
+})

@@ -26,7 +26,6 @@ define([
     })
 
     return {
-      activationKey: 115, // t
       show: view.show
     }
 

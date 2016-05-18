@@ -23,9 +23,14 @@ define([
         TocController($toc, index)
         const searchController = SearchController($toc, index)
         const topicNavigatorController = TopicNavigatorController($toc, index)
-        const activationKeys = [searchController, topicNavigatorController]
+        const helpController = HelpController()
+
+        const activationKeys = {
+          115: searchController,
+          116: topicNavigatorController,
+          63: helpController
+        }
         $(document).keypress(openSearch)
-        HelpController()
 
         function openSearch(event) {
           const $target = $(event.target)
@@ -38,11 +43,12 @@ define([
           //
           //   $fullTextSearch.focus()
           } else {
-            activationKeys.filter(c => c.activationKey === key).forEach(c => {
+            const c = activationKeys[key]
+            if (c) {
               event.preventDefault()
               event.stopPropagation()
               c.show()
-            })
+            }
           }
         }
       }
