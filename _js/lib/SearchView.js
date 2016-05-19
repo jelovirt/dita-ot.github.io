@@ -42,6 +42,7 @@ define([
         $modal.modal('handleUpdate')
       } else {
         const results = doQuery(value)
+        console.log('results', results)
         if (results.length === 0) {
           $body.html('<p class="text-center">No matching topics found.</p>')
         } else {
@@ -81,7 +82,7 @@ define([
       $body.empty()
       $searchInput.val('')
     }
-    
+
     function show() {
       $modal.modal('show')
     }

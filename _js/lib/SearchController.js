@@ -18,7 +18,6 @@ define([
     var queryIndex
 
     var indexUrl = new URI(index + '/../index.json').normalize().href()
-    console.log(indexUrl)
     $.ajax({
       url: indexUrl,
       success: (data) => {
@@ -44,13 +43,16 @@ define([
         body: {boost: 1}
       },
       bool: "AND",
-      expand: true
+      expand: false
     }
 
     function doFullTextQuery(value) {
       return queryIndex
         .search(value, searchConfiguration)
-        .map((match) => titles[match.ref])
+        .map((match) => {
+          console.log('doFullTextQuery', match.ref, _.keys(titles)[0])
+          return titles[match.ref]
+        })
     }
 
     function getTitles($toc) {
