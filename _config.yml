@@ -3,7 +3,7 @@ safe: true
 lsi: false
 highlighter: rouge
 markdown: kramdown
-baseurl: ""
+baseurl: "/dita-ot.github.io"
 sass:
     style: compressed
     sass_dir: css
